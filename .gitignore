@@ -1,1 +1,5 @@
 .env
+.replit
+poetry.lock
+pyproject.toml
+replit.nix
