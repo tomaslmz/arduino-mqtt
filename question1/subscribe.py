@@ -13,7 +13,7 @@ def on_message(client, userdata, msg):
 
 subscribe = mqtt.Client()
 subscribe.username_pw_set(user, password)
-subscribe.connect(endereco, port)
-subscribe.subscribe(topico)
+subscribe.connect(address, port)
+subscribe.subscribe(topic)
 subscribe.on_message = on_message
 subscribe.loop_forever()
