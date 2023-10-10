@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
+import os
 
 user = os.getenv("PUB_USER")
 password = os.getenv("PUB_PASSWORD")
