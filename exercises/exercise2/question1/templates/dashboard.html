@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    
+    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/apexcharts'></script>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto);
+        body {
+            font-family: Roboto, sans-serif;
+        }
+        #chart2 {
+            max-width: 650px;
+            margin: 35px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Dashboard</h1>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <canvas id="chart" width="400" height="200"></canvas>
+                <!-- <canvas id="chart2" width="400" height="200"></canvas> -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do gráfico 1
+        var chartData = {
+            labels: {{ year_value | safe }},
+            datasets: [
+                {
+                    label: 'Temp',
+                    data: {{ temp_value }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Humidity',
+                    data: {{ humidity_value }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                }
+            ]
+        };
+
+        // Configurações do gráfico
+        var chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false
+        };
+
+        // Criação do gráfico
+        var ctx = document.getElementById('chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: chartOptions
+        });
+
+    </script>
+</body>
+</html>
