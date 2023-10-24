@@ -1,35 +1,41 @@
 from flask import Flask, render_template
+import paho.mqtt.client as mqtt
+import json
 import mysql.connector
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
+socketio = SocketIO(app)
+
+user = 'tomas'
+password = '12345'
+address = 'mqtt.eclipseprojects.io' 
+port = 1883
+topic = 'wokwi'
+
+data = ''
+
+def on_message(client, userdata, msg):
+    # print('oi')
+    data = json.loads(msg.payload)
+    # print(json.loads(msg.payload))
+    socketio.emit('data', data)
+
+subscribe = mqtt.Client()
+# subscribe.username_pw_set(user, password)
+subscribe.connect(address, port)
+subscribe.subscribe(topic)
+subscribe.on_message = on_message
+
+@socketio.on('connect')
+def handle_connect():
+    print(data)
+    socketio.emit('data', data)
 
 @app.route("/")
 def index():
-    connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database="arduino")
-    cursor = connection.cursor()
-
-    query = "SELECT * FROM datas"
-
-    cursor.execute(query)
-
-    temp_value = []
-    humidity_value = []
-    year_value = []
-    date_value = []
-
-    for (datas) in cursor.fetchall():
-        # temp.append(temp)
-        id, temp, humidity, date = datas
-        temp_value.append(int(temp))
-        humidity_value.append(int(humidity))
-        year_value.append(date.strftime('%Y'))
-        date_value.append(date.strftime('%Y-%m-%d %H:%M'))
-
-    # return f"<p>Temp: {temp_value} | Humidity: {humidity_value}</p>"
-    print(temp_value)
-    print(humidity_value)
-    print(year_value)
-    return render_template('dashboard.html', temp_value=temp_value, humidity_value=humidity_value, year_value=year_value, date_value=date_value)
+    return render_template('dashboard.html')
 
 # if __name__ == '__main__':
-app.run(host='0.0.0.0')
+subscribe.loop_start()
+socketio.run(app, host='0.0.0.0', port=5000)
